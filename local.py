@@ -119,52 +119,28 @@ def model_predict(uploaded_files, model):
     filedata = filedata.replace('}{', ',')
     with open(json_filename, 'w') as file:
         file.write(filedata)
-    os.remove('fig.png')
+    # os.remove('fig.png') # to remove the image
     return output
 
 
-@app.route('/', methods=['GET'])
-def index():
-    # Main page
-    # return "hi"
-    return render_template('base.html')
-
-
-@app.route('/predict', methods=['GET', 'POST'])
 def upload():
     print("hit")
-    if request.method == 'POST':
-        # Get the file from post request
-        uploaded_files = []
+    # Get the file from post request
+    uploaded_files = os.listdir('uploads')
 
-        # Save the file to ./uploads
-        print(uploaded_files)
-        for f in request.files.getlist('file'):
+    # Make prediction
+    pred = model_predict(uploaded_files, model)
 
-            basepath = os.path.dirname(__file__)
-            file_path = os.path.join(
-                basepath, 'uploads', secure_filename(f.filename))
-            print(file_path)
-            if file_path[-4:] == '.csv':
-                uploaded_files.append(file_path)
-                f.save(file_path)
-        print(uploaded_files)
-        # Make prediction
-        pred = model_predict(uploaded_files, model)
+    # Process your result for human
+    # Simple argmax
+    # pred_class = decode_predictions(pred, top=1)   # ImageNet Decode
+    # result = str(pred_class[0][0][1])               # Convert to string
+    result = str(pred)
 
-        # Process your result for human
-        # Simple argmax
-        # pred_class = decode_predictions(pred, top=1)   # ImageNet Decode
-        # result = str(pred_class[0][0][1])               # Convert to string
-        result = str(pred)
-
-        return result
-    return None
+    return result
 
 
 if __name__ == '__main__':
     # app.run(port=5002, debug=True)
 
-    # Serve the app with gevent
-    http_server = WSGIServer(('', 5000), app)
-    http_server.serve_forever()
+    print(upload())
