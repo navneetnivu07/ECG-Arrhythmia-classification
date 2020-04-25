@@ -38,9 +38,10 @@ Install TensorFow 1.15 and keras
 
 use local.py file
 
-download the model and put it in the folder called "model" in the root directory from Here is the link to the model: [Link](https://drive.google.com/open?id=1aFKVKz41A9fu8dX2KfwlEGV8vz9ljiuZ)
+download the model and put it in the folder called "model" in the root directory
+Here is the link to the model: [Link](https://drive.google.com/open?id=1aFKVKz41A9fu8dX2KfwlEGV8vz9ljiuZ)
 
 download the dataset from here https://www.physionet.org/content/mitdb/1.0.0/
-this filr in the page -> Download the ZIP file (73.5 MB)
+download this file in the page -> Download the ZIP file (73.5 MB)
 and extract it to the root directory
-delete the 102-0.atr file coz hea file is missing for that
+delete the 102-0.atr file coz .hea file is missing for that
