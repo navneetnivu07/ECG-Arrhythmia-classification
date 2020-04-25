@@ -12,9 +12,10 @@ import numpy as np
 import biosppy
 import matplotlib.pyplot as plt
 # Keras
-from keras.applications.imagenet_utils import preprocess_input, decode_predictions
-from keras.models import load_model
-from keras.preprocessing import image
+from tensorflow.keras.applications.imagenet_utils import preprocess_input, decode_predictions
+from tensorflow.keras.preprocessing import image
+
+import tensorflow as tf
 
 # Flask utils
 from flask import Flask, redirect, url_for, request, render_template
@@ -27,8 +28,13 @@ app = Flask(__name__)
 
 # Model saved with Keras model.save()
 
+filepath = 'ecgScratchEpoch2.hdf5'
 # Load your trained model
-model = load_model('ecgScratchEpoch2.hdf5')
+model = tf.keras.models.load_model(
+    filepath, custom_objects=None, compile=True
+)
+
+
 model._make_predict_function()          # Necessary
 print('Model loaded. Start serving...')
 output = []
@@ -103,7 +109,8 @@ def model_predict(uploaded_files, model):
                 RBB.append(indices[count])
             elif pred_class == 6:
                 VEB.append(indices[count])
-        result = sorted(result.items(), key=lambda y: len(y[1]))[::-1]
+        print(result)
+        # result = sorted(result.items(), key=lambda y: len(y[1]))[::-1]
         output.append(result)
         data = {}
         data['filename' + str(flag)] = str(path)
@@ -126,13 +133,11 @@ def model_predict(uploaded_files, model):
 @app.route('/', methods=['GET'])
 def index():
     # Main page
-    # return "hi"
-    return render_template('base.html')
+    return render_template('index.html')
 
 
 @app.route('/predict', methods=['GET', 'POST'])
 def upload():
-    print("hit")
     if request.method == 'POST':
         # Get the file from post request
         uploaded_files = []
