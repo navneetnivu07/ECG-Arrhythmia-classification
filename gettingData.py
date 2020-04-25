@@ -61,5 +61,6 @@ def segmentation(records):
 
 if __name__ == '__main__':
     # app.run(port=5002, debug=True)
-
-    print(segmentation(get_records()))
+    op = segmentation(get_records())
+    np_op = np.array(op)
+    print(np_op.shape)
