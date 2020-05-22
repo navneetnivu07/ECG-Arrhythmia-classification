@@ -1,6 +1,8 @@
 import glob
 import numpy as np
 import wfdb
+import matplotlib.pyplot as plt
+import cv2
 
 
 def get_records():
@@ -41,12 +43,17 @@ def segmentation(records):
     for e in records:
         print(e)
         signals, fields = wfdb.rdsamp(e, channels=[0])
+        print(signals)
+        print(fields)
 
         ann = wfdb.rdann(e, 'atr')
+        print(ann)
         good = ['N']
         ids = np.in1d(ann.symbol, good)
+        print(ids)
         imp_beats = ann.sample[ids]
         beats = (ann.sample)
+        print("imp_beats", imp_beats)
         for i in imp_beats:
             beats = list(beats)
             j = beats.index(i)
@@ -63,4 +70,19 @@ if __name__ == '__main__':
     # app.run(port=5002, debug=True)
     op = segmentation(get_records())
     np_op = np.array(op)
+    directory = 'images'
     print(np_op.shape)
+    print("here", op)
+    for count, i in enumerate(op):
+        fig = plt.figure(frameon=False)
+        plt.plot(i)
+        plt.xticks([]), plt.yticks([])
+        for spine in plt.gca().spines.values():
+            spine.set_visible(False)
+
+        filename = directory + '/' + str(count)+'.png'
+        fig.savefig(filename)
+        im_gray = cv2.imread(filename, cv2.IMREAD_GRAYSCALE)
+        im_gray = cv2.resize(im_gray, (128, 128),
+                             interpolation=cv2.INTER_LANCZOS4)
+        cv2.imwrite(filename, im_gray)
